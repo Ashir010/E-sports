@@ -11,7 +11,6 @@ import PerformanceCharts from '../../components/leaderboard/PerformanceCharts.js
 import { useData } from '../../context/DataContext.jsx';
 import { useDebounce, useDocumentTitle } from '../../hooks/index.js';
 import { GAME_LIST } from '../../lib/constants.js';
-import { isDemoMode } from '../../services/api.js';
 import { withMovement, computePlayerStandings, describeRules, rulesFor, CIRCUIT_DESCRIPTION } from '../../utils/scoring.js';
 import { byId, publicTournaments } from '../../utils/selectors.js';
 
@@ -81,7 +80,6 @@ export default function Leaderboard() {
               <strong className="text-mist-200">Scoring: </strong>
               {scoringNote}
               {kind === 'player' && ' Players are credited with their team’s results.'} Movement compares against standings before the latest match day.
-              {isDemoMode && <span className="ml-1 text-warn">Showing demo data.</span>}
             </span>
           </p>
         </div>

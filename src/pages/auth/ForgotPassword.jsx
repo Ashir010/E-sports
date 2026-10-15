@@ -7,7 +7,6 @@ import { Input } from '../../components/ui/Field.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useToast } from '../../context/ToastContext.jsx';
 import { useDocumentTitle } from '../../hooks/index.js';
-import { isDemoMode } from '../../services/api.js';
 import { validateEmail } from '../../utils/validation.js';
 
 export default function ForgotPassword() {
@@ -44,9 +43,8 @@ export default function ForgotPassword() {
         </div>
       ) : (
         <form onSubmit={submit} noValidate className="space-y-4">
-          {isDemoMode && <p className="rounded-lg border border-warn/30 bg-warn/5 p-3 text-xs text-warn">Password reset emails require Supabase. Demo accounts don’t have passwords.</p>}
-          <Input label="Email" type="email" icon={Mail} autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} error={error} disabled={isDemoMode} />
-          <Button type="submit" size="lg" className="w-full" loading={busy} disabled={isDemoMode}>
+          <Input label="Email" type="email" icon={Mail} autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} error={error} />
+          <Button type="submit" size="lg" className="w-full" loading={busy}>
             Send reset link
           </Button>
         </form>

@@ -8,7 +8,6 @@ import { Input, Select } from '../../components/ui/Field.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useToast } from '../../context/ToastContext.jsx';
 import { useDocumentTitle } from '../../hooks/index.js';
-import { isDemoMode } from '../../services/api.js';
 import { GAME_LIST } from '../../lib/constants.js';
 import { validateSignup, hasErrors } from '../../utils/validation.js';
 
@@ -29,7 +28,7 @@ export default function Signup() {
 
   const submit = async (e) => {
     e.preventDefault();
-    const errs = validateSignup(form, { requirePassword: !isDemoMode });
+    const errs = validateSignup(form);
     setErrors(errs);
     if (hasErrors(errs)) return;
     setBusy(true);
@@ -40,7 +39,7 @@ export default function Signup() {
         setBusy(false);
         return;
       }
-      toast.success(isDemoMode ? 'Demo profile created in this browser.' : 'Account created. Welcome!');
+      toast.success('Account created. Welcome!');
       navigate(redirect, { replace: true });
     } catch (err) {
       toast.error(err.message, 'Sign up failed');
@@ -69,7 +68,6 @@ export default function Signup() {
         </>
       }
     >
-      {isDemoMode && <p className="mb-5 rounded-lg border border-warn/30 bg-warn/5 p-3 text-xs text-warn">Demo mode: this creates a profile stored only in this browser. No password is saved and no email is sent.</p>}
       <form onSubmit={submit} noValidate className="space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <Input label="Display name" required autoComplete="name" {...field('displayName')} />
@@ -78,12 +76,10 @@ export default function Signup() {
         <Input label="Email" type="email" required autoComplete="email" {...field('email')} />
         <Input label="College" required placeholder="e.g. Delhi Technological University" {...field('college')} />
         <Select label="Favourite game" {...field('favoriteGame')} options={GAME_LIST.map((g) => ({ value: g.id, label: g.name }))} />
-        {!isDemoMode && (
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Input label="Password" type="password" required autoComplete="new-password" hint="8+ chars, letters & numbers" {...field('password')} />
-            <Input label="Confirm password" type="password" required autoComplete="new-password" {...field('confirm')} />
-          </div>
-        )}
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Input label="Password" type="password" required autoComplete="new-password" hint="8+ chars, letters & numbers" {...field('password')} />
+          <Input label="Confirm password" type="password" required autoComplete="new-password" {...field('confirm')} />
+        </div>
         <p className="text-xs text-mist-500">
           By signing up you agree to the <Link to="/terms" className="text-mist-300 underline">Terms</Link> and <Link to="/privacy" className="text-mist-300 underline">Privacy Policy</Link>.
         </p>

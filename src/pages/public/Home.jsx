@@ -18,7 +18,6 @@ import { useData } from '../../context/DataContext.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useDocumentTitle, useDebounce } from '../../hooks/index.js';
 import { GAME_LIST } from '../../lib/constants.js';
-import { isDemoMode } from '../../services/api.js';
 import { filterTournaments, SORTS } from '../../utils/tournamentFilters.js';
 import { withMovement } from '../../utils/scoring.js';
 import { platformStats, upcomingMatches, spotlightPlayers, publicTournaments } from '../../utils/selectors.js';
@@ -99,7 +98,6 @@ function Hero({ db, loading, stats, nextMatch, topTeams, featured }) {
               </motion.div>
             ))}
           </motion.dl>
-          {isDemoMode && <p className="mt-3 font-mono text-[10px] uppercase tracking-wider text-mist-600">Figures from demo data</p>}
         </div>
         <div className="relative hidden sm:block">{!loading && <HeroVisual db={db} nextMatch={nextMatch} topTeams={topTeams} featured={featured} />}</div>
       </div>
@@ -171,6 +169,8 @@ function FeaturedTournaments({ db, loading }) {
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <CardSkeleton count={3} />
         </div>
+      ) : publicTournaments(db).length === 0 ? (
+        <EmptyState icon={Gamepad2} title="No tournaments yet" message="The first tournaments will appear here as soon as organisers publish them." />
       ) : shown.length === 0 ? (
         <EmptyState
           icon={Gamepad2}
@@ -317,6 +317,8 @@ function Spotlight({ db, loading }) {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <CardSkeleton count={4} className="h-64" />
         </div>
+      ) : players.length === 0 ? (
+        <EmptyState icon={Users} title="No ranked players yet" message="Players appear here once their teams have played and results are posted." />
       ) : (
         <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={stagger} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {players.map((p) => (

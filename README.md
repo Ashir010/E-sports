@@ -6,33 +6,30 @@ A full-stack web app for running college esports tournaments in **BGMI, Valorant
 
 ---
 
-## Quick start (demo mode, no setup)
+## Quick start
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173
+cp .env.example .env.local   # then fill in your Supabase URL + anon key (see below)
+npm run dev                  # http://localhost:5173
 ```
 
-With no Supabase credentials the app runs in **demo mode**:
-
-- All teams, players and results are **fictional demo data**, generated relative to today's date so open tournaments stay current.
-- Anything you create or change is saved **only in your browser** (localStorage). A "Demo data" pill in the bottom-left corner says so and offers a reset.
-- On the login page, choose **Continue as Team Captain / Player / Administrator** to explore each role. You can also create a demo profile from the sign-up page; no password is stored.
+All data (tournaments, teams, players, matches, results) lives in your **Supabase** database. There is no fake or sample data: the platform starts empty, and content comes from real sign-ups and what admins create. Without credentials, the app shows a setup screen.
 
 Other scripts:
 
 ```bash
-npm test           # unit + workflow tests (Vitest)
+npm test           # unit tests for scoring, registration rules, validation, filters
 npm run build      # production build to dist/
 npm run preview    # serve the production build
 ```
 
-### Suggested demo walkthrough
+### First run checklist
 
-1. **Captain** (`kabir.gg`): go to *Valorant Campus Clash S3* and register Phantom Protocol. The tournament requires approval, so the registration shows as *Pending*.
-2. **Admin** (`arena.admin`): go to *Admin → Registrations*, approve it, then open *Matches* and enter the result for the in-progress match. The leaderboard updates immediately.
-3. **Player** (`ananya.exe`): create a team, copy its invite code, and try registering for a tournament with too few players to see the validation.
-4. Check the restricted states: *Free Fire Booyah Cup* is full, *Mini Militia Doodle Duel* is past its deadline, and *Free Fire Night Ops* was cancelled.
+1. Sign up with your organiser account, then make it admin (see *Creating the first admin* below).
+2. *Admin → Tournaments → New tournament*: create one and set status to **Registration Open**.
+3. Players sign up, create a team (*Teams → Create a team*), share the invite code, and the captain registers.
+4. *Admin → Registrations* (if approval is on), then *Admin → Matches*: schedule matches and enter results. Leaderboards update automatically.
 
 ---
 
@@ -67,7 +64,6 @@ The logic lives in [`src/utils/scoring.js`](src/utils/scoring.js) and is covered
    1. [`supabase/migrations/001_schema.sql`](supabase/migrations/001_schema.sql): tables, constraints, indexes, profile-on-signup trigger
    2. [`supabase/migrations/002_rls.sql`](supabase/migrations/002_rls.sql): row level security policies and the `media` storage bucket
    3. [`supabase/migrations/003_functions.sql`](supabase/migrations/003_functions.sql): secure functions for teams, registrations and admin actions
-   4. *(optional)* [`supabase/seed.sql`](supabase/seed.sql): four sample tournaments marked `[DEMO]`
 3. Copy `.env.example` to `.env.local` and fill in values from **Project Settings → API**:
 
    ```env
@@ -77,7 +73,7 @@ The logic lives in [`src/utils/scoring.js`](src/utils/scoring.js) and is covered
 
    Use the **anon public** key only. **Never** put the `service_role` key in any `VITE_` variable or frontend code; Vite would ship it to every visitor.
 4. Under **Authentication → URL Configuration**, set the Site URL (e.g. `http://localhost:5173`, later your Vercel URL) and add `<site>/reset-password` and `<site>/login` to the redirect URLs.
-5. Restart `npm run dev`. The demo pill disappears and every read and write goes to Supabase.
+5. Restart `npm run dev`.
 
 ### Creating the first admin securely
 
@@ -113,7 +109,7 @@ Admin rights can't be self-assigned: a trigger blocks users from changing their 
 4. Deploy. [`vercel.json`](vercel.json) rewrites all routes to `index.html` so deep links like `/tournaments/xyz` work.
 5. Add the Vercel URL to Supabase **Auth → URL Configuration**.
 
-Leaving the env vars out produces a public demo-mode deployment.
+Without the env vars the deployed site shows the setup screen.
 
 ---
 
@@ -123,7 +119,7 @@ Leaving the env vars out produces a public demo-mode deployment.
 src/
   components/
     ui/            Button, Badge, Field (Input/Select/Textarea/Checkbox), Modal + ConfirmDialog, Tabs, States, Avatar/TeamLogo, GameArt
-    layout/        Navbar (sticky, mobile menu), Footer, DemoBanner, Logo, Motion helpers
+    layout/        Navbar (sticky, mobile menu), Footer, SetupRequired, Logo, Motion helpers
     tournaments/   TournamentCard, RegisterPanel, Bracket
     matches/       MatchCard, MatchCalendar
     leaderboard/   LeaderboardTable, Podium, PerformanceCharts
@@ -135,8 +131,7 @@ src/
     admin/         Overview, Tournaments, Registrations, Teams, Players, Matches, Leaderboard, Settings
   layouts/         PublicLayout, AdminLayout, RouteGuards (ProtectedRoute, AdminRoute)
   context/         DataContext (snapshot + refresh), AuthContext, ToastContext
-  services/        api.js (switches backend), supabaseApi.js, demoApi.js, demoStore.js
-  data/demo/       seed.js + fixtures.js (clearly marked demo data)
+  services/        api.js, supabaseApi.js (all reads/writes go to Supabase)
   utils/           scoring, registrationRules, validation, tournamentFilters, selectors, format
   lib/             supabase client, constants (games, formats, timezone)
 supabase/          SQL migrations + optional seed

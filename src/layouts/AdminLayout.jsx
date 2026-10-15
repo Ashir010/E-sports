@@ -3,7 +3,6 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { LayoutDashboard, Trophy, ClipboardList, Users, UserRound, Swords, BarChart3, Settings, Menu, X, ArrowLeft } from 'lucide-react';
 import Logo from '../components/layout/Logo.jsx';
-import DemoBanner from '../components/layout/DemoBanner.jsx';
 import { Avatar } from '../components/ui/Avatar.jsx';
 import PageFallback from '../components/ui/PageFallback.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
@@ -58,7 +57,6 @@ export default function AdminLayout() {
           <Outlet />
         </Suspense>
       </main>
-      <DemoBanner />
     </div>
   );
 }
@@ -68,7 +66,7 @@ function Sidebar() {
   const { db } = useData();
   const pending = db.registrations.filter((r) => r.status === 'pending').length;
   return (
-    <div className="flex h-full flex-col p-4 pb-20">
+    <div className="flex h-full flex-col p-4">
       <div className="px-2 py-2">
         <Logo to="/admin" />
         <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-violet-400">Admin console</p>

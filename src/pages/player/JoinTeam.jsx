@@ -9,7 +9,6 @@ import { useData } from '../../context/DataContext.jsx';
 import { useToast } from '../../context/ToastContext.jsx';
 import { useDocumentTitle } from '../../hooks/index.js';
 import { validateInviteCode } from '../../utils/validation.js';
-import { isDemoMode } from '../../services/api.js';
 
 /** Join a team via invite code or invite link (/teams/join?code=XXXX). */
 export default function JoinTeam() {
@@ -51,7 +50,6 @@ export default function JoinTeam() {
         <Button type="submit" size="lg" className="w-full" loading={busy}>
           Join team
         </Button>
-        {isDemoMode && <p className="text-center text-xs text-mist-500">Demo tip: try <code className="text-mist-300">BYB3QS9A</code> (Booyah Brigade, Free Fire) — it has a free substitute slot.</p>}
       </form>
     </AuthShell>
   );

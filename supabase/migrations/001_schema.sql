@@ -30,6 +30,7 @@ create table if not exists public.profiles (
   constraint username_format check (username ~ '^[A-Za-z0-9_.]{3,20}$')
 );
 create unique index if not exists profiles_username_lower_idx on public.profiles (lower(username));
+drop trigger if exists profiles_updated_at on public.profiles;
 create trigger profiles_updated_at before update on public.profiles for each row execute function public.set_updated_at();
 
 -- ---------- tournaments ----------
@@ -62,6 +63,7 @@ create table if not exists public.tournaments (
 create index if not exists tournaments_status_idx on public.tournaments (status);
 create index if not exists tournaments_game_idx on public.tournaments (game);
 create index if not exists tournaments_start_idx on public.tournaments (start_at);
+drop trigger if exists tournaments_updated_at on public.tournaments;
 create trigger tournaments_updated_at before update on public.tournaments for each row execute function public.set_updated_at();
 
 -- ---------- teams ----------
@@ -79,6 +81,7 @@ create table if not exists public.teams (
 );
 create unique index if not exists teams_game_name_idx on public.teams (game, lower(name));
 create index if not exists teams_captain_idx on public.teams (captain_id);
+drop trigger if exists teams_updated_at on public.teams;
 create trigger teams_updated_at before update on public.teams for each row execute function public.set_updated_at();
 
 -- Invite codes live in their own table so only team members can read them.
@@ -111,6 +114,7 @@ create table if not exists public.tournament_registrations (
 );
 create index if not exists registrations_tournament_status_idx on public.tournament_registrations (tournament_id, status);
 create index if not exists registrations_team_idx on public.tournament_registrations (team_id);
+drop trigger if exists registrations_updated_at on public.tournament_registrations;
 create trigger registrations_updated_at before update on public.tournament_registrations for each row execute function public.set_updated_at();
 
 -- ---------- matches ----------
@@ -127,6 +131,7 @@ create table if not exists public.matches (
 create index if not exists matches_tournament_idx on public.matches (tournament_id);
 create index if not exists matches_scheduled_idx on public.matches (scheduled_at);
 create index if not exists matches_status_idx on public.matches (status);
+drop trigger if exists matches_updated_at on public.matches;
 create trigger matches_updated_at before update on public.matches for each row execute function public.set_updated_at();
 
 create table if not exists public.match_participants (

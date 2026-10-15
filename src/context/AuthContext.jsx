@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { api, isDemoMode } from '../services/api.js';
+import { api } from '../services/api.js';
 import { useData } from './DataContext.jsx';
 
 const AuthContext = createContext(null);
@@ -35,16 +35,10 @@ export function AuthProvider({ children }) {
     return id;
   }, [refresh]);
 
-  const demoLogin = useCallback(async (profileId) => {
-    const id = await api.demoLogin(profileId);
-    setUserId(id);
-    return id;
-  }, []);
-
   const signUp = useCallback(async (data) => {
     const res = await api.signUp(data);
     await refresh();
-    if (isDemoMode || !res.needsConfirmation) setUserId(res.userId);
+    if (!res.needsConfirmation) setUserId(res.userId);
     return res;
   }, [refresh]);
 
@@ -64,11 +58,10 @@ export function AuthProvider({ children }) {
       signIn,
       signUp,
       signOut,
-      demoLogin,
       resetPassword: api.resetPassword,
       updatePassword: api.updatePassword,
     }),
-    [userId, profile, checking, dataLoading, recovery, signIn, signUp, signOut, demoLogin]
+    [userId, profile, checking, dataLoading, recovery, signIn, signUp, signOut]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

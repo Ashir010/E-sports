@@ -7,7 +7,6 @@ import { Input } from '../../components/ui/Field.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useToast } from '../../context/ToastContext.jsx';
 import { useDocumentTitle } from '../../hooks/index.js';
-import { isDemoMode } from '../../services/api.js';
 import { validatePassword } from '../../utils/validation.js';
 
 /** Landing page for the Supabase recovery link (session is established from the URL by supabase-js). */
@@ -41,12 +40,12 @@ export default function ResetPassword() {
     }
   };
 
-  const unavailable = isDemoMode || !userId;
+  const unavailable = !userId;
   return (
     <AuthShell title="New password" subtitle="Choose a strong password you haven’t used before.">
       {unavailable && (
         <p className="mb-4 rounded-lg border border-warn/30 bg-warn/5 p-3 text-xs text-warn">
-          {isDemoMode ? 'Password changes require Supabase configuration.' : 'Open this page from the reset link in your email. The link may have expired — request a new one.'}
+          Open this page from the reset link in your email. The link may have expired — request a new one.
         </p>
       )}
       <form onSubmit={submit} noValidate className="space-y-4">

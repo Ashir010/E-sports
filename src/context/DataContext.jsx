@@ -13,7 +13,8 @@ export function DataProvider({ children }) {
   const refresh = useCallback(async () => {
     try {
       setError(null);
-      const snapshot = await api.loadSnapshot();
+      const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Could not reach the database. Check your internet connection and Supabase settings.')), 15000));
+      const snapshot = await Promise.race([api.loadSnapshot(), timeout]);
       setDb(snapshot);
     } catch (e) {
       setError(e.message || 'Could not load data.');

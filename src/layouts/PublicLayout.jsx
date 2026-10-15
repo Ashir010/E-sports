@@ -2,7 +2,6 @@ import { Suspense } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar.jsx';
 import Footer from '../components/layout/Footer.jsx';
-import DemoBanner from '../components/layout/DemoBanner.jsx';
 import { PageTransition } from '../components/layout/Motion.jsx';
 import PageFallback from '../components/ui/PageFallback.jsx';
 
@@ -20,7 +19,6 @@ export default function PublicLayout() {
         </PageTransition>
       </main>
       <Footer />
-      <DemoBanner />
     </div>
   );
 }
